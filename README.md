@@ -1,5 +1,9 @@
 # LocalSignal Maps
 
+## Current version
+
+[Download 0.9.0](https://github.com/LocalSignal/localsignal-maps/archive/0.9.0.zip)
+
 ## Synopsis
 
 LocalSignal Maps is a jQuery library that is intended to make displaying a stylized map painless. The data attributes used to explain how to render the map
