@@ -1,13 +1,45 @@
 (function($) {
   $.fn.localSignalMaps = function() {
+    var place_marker;
+    place_marker = function(map, bounds, info, lat, lng, marker, text) {
+      var infowindow, lsMarker;
+      if (marker != null) {
+        lsMarker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat, lng),
+          map: map,
+          icon: marker
+        });
+        bounds.extend(lsMarker.position);
+        map.fitBounds(bounds);
+        if (text != null) {
+          infowindow = new google.maps.InfoWindow({
+            content: text
+          });
+          return lsMarker.addListener('click', function() {
+            return infowindow.open(map, lsMarker);
+          });
+        }
+      }
+    };
     this.each(function() {
       var $map;
       $map = $(this);
       return google.maps.event.addDomListener(window, 'load', function() {
-        var custom_map_type, feature_opts, final_opts, invert_map, invert_water, ls_map, map, map_options, map_type, marker, myntMarker, simple_opts;
+        var bounds, custom_map_type, feature_opts, final_opts, i, info, init_center, invert_map, invert_water, len, listener, map, map_options, map_type, point, ref, simple_opts, zoom_level;
         map_type = 'custom_style';
         invert_map = $map.data("map-light") === true ? -1 : 1;
         invert_water = $map.data("map-light-water") === true ? -1 : 1;
+        zoom_level = $map.data("map-zoom");
+        init_center = $map.data("map-points") != null ? new google.maps.LatLng($map.data("map-points")[0]['lat'], $map.data("map-points")[0]['lng']) : new google.maps.LatLng($map.data("map-lat"), $map.data("map-lng"));
+        map_options = {
+          scrollwheel: false,
+          zoom: zoom_level,
+          center: init_center,
+          mapTypeControlOptions: {
+            mapTypeIds: [google.maps.MapTypeId.ROADMAP, map_type]
+          },
+          mapTypeId: map_type
+        };
         simple_opts = [
           {
             stylers: [
@@ -160,35 +192,27 @@
             ]
           }
         ];
+        map = new google.maps.Map($map[0], map_options);
+        info = new google.maps.InfoWindow();
+        bounds = new google.maps.LatLngBounds();
+        final_opts = $map.data("map-simple") === true ? simple_opts : feature_opts;
+        custom_map_type = new google.maps.StyledMapType(final_opts, {
+          name: 'Custom Style'
+        });
+        map.mapTypes.set(map_type, custom_map_type);
         if ($map.data("map-points") != null) {
-          return console.log("one");
-        } else {
-          ls_map = new google.maps.LatLng($map.data("map-lat"), $map.data("map-lng"));
-          map_options = {
-            zoom: $map.data("map-zoom"),
-            center: ls_map,
-            scrollwheel: false,
-            mapTypeControlOptions: {
-              mapTypeIds: [google.maps.MapTypeId.ROADMAP, map_type]
-            },
-            mapTypeId: map_type
-          };
-          map = new google.maps.Map($map[0], map_options);
-          marker = $map.data("map-marker");
-          if (marker != null) {
-            myntMarker = new google.maps.Marker({
-              position: ls_map,
-              map: map,
-              icon: marker,
-              title: 'LocalSignal Maps'
-            });
+          ref = $map.data("map-points");
+          for (i = 0, len = ref.length; i < len; i++) {
+            point = ref[i];
+            place_marker(map, bounds, info, point["lat"], point["lng"], point["marker"], point["info"]);
           }
-          final_opts = $map.data("map-simple") === true ? simple_opts : feature_opts;
-          custom_map_type = new google.maps.StyledMapType(final_opts, {
-            name: 'Custom Style'
-          });
-          return map.mapTypes.set(map_type, custom_map_type);
+        } else {
+          place_marker(map, bounds, info, $map.data("map-lat"), $map.data("map-lng"), $map.data("map-marker"), $map.data("map-info"));
         }
+        return listener = google.maps.event.addListener(map, "idle", function() {
+          map.setZoom(zoom_level);
+          return google.maps.event.removeListener(listener);
+        });
       });
     });
     return this;

@@ -2,7 +2,7 @@
 
 ## Current version
 
-[Download 0.9.0](https://github.com/LocalSignal/localsignal-maps/archive/0.9.0.zip)
+[Download 0.9.1](https://github.com/LocalSignal/localsignal-maps/archive/0.9.1.zip)
 
 ## Synopsis
 
