@@ -4,8 +4,7 @@
       var $map;
       $map = $(this);
       return google.maps.event.addDomListener(window, 'load', function() {
-        var custom_map_type, feature_opts, final_opts, invert_map, invert_water, ls_map, map, map_options, map_type, marker, myntMarker, simple_opts, styledMapOptions;
-        ls_map = new google.maps.LatLng($map.data("map-lat"), $map.data("map-lng"));
+        var custom_map_type, feature_opts, final_opts, invert_map, invert_water, ls_map, map, map_options, map_type, marker, myntMarker, simple_opts;
         map_type = 'custom_style';
         invert_map = $map.data("map-light") === true ? -1 : 1;
         invert_water = $map.data("map-light-water") === true ? -1 : 1;
@@ -161,36 +160,41 @@
             ]
           }
         ];
-        map_options = {
-          zoom: $map.data("map-zoom"),
-          center: ls_map,
-          scrollwheel: false,
-          mapTypeControlOptions: {
-            mapTypeIds: [google.maps.MapTypeId.ROADMAP, map_type]
-          },
-          mapTypeId: map_type
-        };
-        map = new google.maps.Map($map[0], map_options);
-        styledMapOptions = {
-          name: 'Custom Style'
-        };
-        marker = $map.data("map-marker");
-        if (marker != null) {
-          myntMarker = new google.maps.Marker({
-            position: ls_map,
-            map: map,
-            icon: marker,
-            title: 'LocalSignal Maps'
+        if ($map.data("map-points") != null) {
+          return console.log("one");
+        } else {
+          ls_map = new google.maps.LatLng($map.data("map-lat"), $map.data("map-lng"));
+          map_options = {
+            zoom: $map.data("map-zoom"),
+            center: ls_map,
+            scrollwheel: false,
+            mapTypeControlOptions: {
+              mapTypeIds: [google.maps.MapTypeId.ROADMAP, map_type]
+            },
+            mapTypeId: map_type
+          };
+          map = new google.maps.Map($map[0], map_options);
+          marker = $map.data("map-marker");
+          if (marker != null) {
+            myntMarker = new google.maps.Marker({
+              position: ls_map,
+              map: map,
+              icon: marker,
+              title: 'LocalSignal Maps'
+            });
+          }
+          final_opts = $map.data("map-simple") === true ? simple_opts : feature_opts;
+          custom_map_type = new google.maps.StyledMapType(final_opts, {
+            name: 'Custom Style'
           });
+          return map.mapTypes.set(map_type, custom_map_type);
         }
-        final_opts = $map.data("map-simple") === true ? simple_opts : feature_opts;
-        custom_map_type = new google.maps.StyledMapType(final_opts, styledMapOptions);
-        return map.mapTypes.set(map_type, custom_map_type);
       });
     });
     return this;
   };
   return $(function() {
-    return $("[data-map-lat]").localSignalMaps();
+    $("[data-map-lat]").localSignalMaps();
+    return $("[data-map-points]").localSignalMaps();
   });
 })(window.jQuery);
