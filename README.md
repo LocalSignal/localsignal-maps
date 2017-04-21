@@ -16,7 +16,7 @@ The api will auto initialize any element containing the data-map-lat data attrib
 
 ## Code Example
 
-### Hue Maps With Marker
+### Hue Maps With Marker and optional info
 
 ![Example 1](https://s3.amazonaws.com/localsignal/maps/examples/1.png)
 
@@ -28,6 +28,7 @@ The api will auto initialize any element containing the data-map-lat data attrib
      data-map-color="#002130"
      data-map-water="#00cefd"
      data-map-zoom="10"
+     data-map-info="123 Test Ln"
      data-map-marker="https://s3.amazonaws.com/localsignal/general/images/map-markers/marker-10.png">
 </div>
 ```
@@ -74,6 +75,33 @@ The api will auto initialize any element containing the data-map-lat data attrib
      data-map-water="#002130"
      data-map-zoom="10"
      data-map-light="true">
+</div>
+```
+
+### Multiple marker support with optional info boxes
+
+![Example 5](https://s3.amazonaws.com/localsignal/maps/examples/5.png)
+
+```html
+<div class="map-canvas"
+     data-map-simple="true"
+     data-map-color="#002130"
+     data-map-water="#00cefd"
+     data-map-zoom="10"
+     data-map-points='[
+      {
+        "info": "here is some info",
+        "lat": "29.763544",
+        "lng": "-95.461800",
+        "marker": "https://s3.amazonaws.com/localsignal/general/images/map-markers/marker-10.png"
+      },
+      {
+        "info": "here is some more info",
+        "lat": "29.663544",
+        "lng": "-95.561800",
+        "marker": "https://s3.amazonaws.com/localsignal/general/images/map-markers/marker-10.png"
+      }
+    ]'>
 </div>
 ```
 
